@@ -1,0 +1,9 @@
+{
+  "appId": "com.mothlight.game",
+  "appName": "Moth Light",
+  "webDir": "dist",
+  "backgroundColor": "#14132B",
+  "plugins": {
+    "SystemBars": { "insetsHandling": "disable", "hidden": true }
+  }
+}

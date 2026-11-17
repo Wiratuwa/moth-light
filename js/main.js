@@ -15,6 +15,7 @@ import { ttlPoint } from './title.js';
 import { cineSkip, cineStep } from './cine.js';
 import { PV_KEYS, PV_SLOW, pvEnd, pvStep, startPV } from './trailer.js';
 import { Sound } from './audio.js';
+import './native.js';
 import './render/thunder.js';
 import './render/cosmic.js';
 import './render/planets.js';

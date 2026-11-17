@@ -9,7 +9,13 @@
     "test": "node tests/run.mjs"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
     "playwright-core": "^1.65.1",
     "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2"
   }
 }

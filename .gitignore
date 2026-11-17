@@ -5,3 +5,4 @@ android/app/build/
 *.jks
 .env
 tests/trace-*.json
+output/
