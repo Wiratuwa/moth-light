@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { AUR, ctx, reduceMotion } from '../config.js';
-import { rgb } from '../core.js';
+import { rgb, SIDES } from '../core.js';
 import { PTAU, mixc, rng32 } from './planets.js';
 import { exL, exR } from '../edge.js';
 import { glow } from './glow.js';
@@ -309,13 +309,16 @@ export function drawGateSt(it, t, st) {                                // Aurora
   }
   ctx.restore();
 }
+const acGrad = [null, null, null];                                     // one gradient per layer, rebuilt only when the screen height changes
+let acH = -1;
 export function drawAuroraCurtains(t, pulse) {                         // Aurora sky: rays of light rising from the ribbons, bright at the hem, fading upward
   const a = ST.uw[2]; if (a < .02) return;
   const tm = reduceMotion ? 0 : t, step = ST.lowFx ? 10 : 6, layers = ST.lowFx ? 2 : 3, Hm = ST.H * .27;
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  if (acH !== Hm) { acGrad[0] = acGrad[1] = acGrad[2] = null; acH = Hm; }
   for (let j = 0; j < layers; j++) {
-    const g = ctx.createLinearGradient(0, 0, 0, -Hm); g.addColorStop(0, 'rgba(' + AUR[j] + ',.13)'); g.addColorStop(.4, 'rgba(' + AUR[j] + ',.05)'); g.addColorStop(1, 'rgba(' + AUR[j] + ',0)');
-    ctx.fillStyle = g; ctx.globalAlpha = a * (.8 + pulse * .3);
+    if (!acGrad[j]) { const g = ctx.createLinearGradient(0, 0, 0, -Hm); g.addColorStop(0, 'rgba(' + AUR[j] + ',.13)'); g.addColorStop(.4, 'rgba(' + AUR[j] + ',.05)'); g.addColorStop(1, 'rgba(' + AUR[j] + ',0)'); acGrad[j] = g; }
+    ctx.fillStyle = acGrad[j]; ctx.globalAlpha = a * (.8 + pulse * .3);
     for (let x = -10; x <= ST.W + 10; x += step) {
       const y = ST.H * (.16 + .13 * j) + Math.sin(x * .011 + tm * (.5 + .2 * j) + j * 2) * (30 + j * 12) + Math.sin(x * .027 - tm * .7) * (14 + j * 5);
       const k = .5 + .5 * Math.sin(x * .021 + tm * .45 + j * 1.7), k2 = .5 + .5 * Math.sin(x * .047 - tm * .3 + j * 2.3), h = Hm * (.35 + .65 * (k * .6 + k2 * .4));
@@ -509,7 +512,7 @@ export function drawStormWarn(it, t) {                                 // Crimso
   for (let k = 0; k < 12; k++) { const xx = x - hw + fxRnd(k * 3.1) * hw * 2, yy = ((fxRnd(k * 5.3) * (ST.H + 80) + tm * (520 + (k % 4) * 90)) % (ST.H + 80)) - 40; ctx.moveTo(xx, yy); ctx.lineTo(xx - 3, yy + 22); }
   ctx.stroke(); ctx.restore();
   ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round';
-  for (const sd of [-1, 1]) {                                   // crackling filaments crawl down both edges: the exact hit zone
+  for (const sd of SIDES) {                                   // crackling filaments crawl down both edges: the exact hit zone
     const pts = []; for (let y = -ST.H * .35; y < ST.H * 1.35; y += 22) pts.push([x + sd * hw + (reduceMotion ? 0 : (Math.random() - .5) * (locked ? 7 : 4)), y]);
     for (const [c, lw] of [['rgba(255,90,40,' + (.35 + .2 * pulse) + ')', 5], ['rgba(255,214,170,' + (.7 + .3 * pulse) + ')', 1.6]]) { ctx.strokeStyle = c; ctx.lineWidth = lw; ctx.beginPath(); pts.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke(); }
   }
@@ -545,7 +548,7 @@ export function drawFrostWarn(it, t) {                                 // Aurora
   for (let k = 0; k < 14; k++) { const xx = x - hw + 4 + fxRnd(k * 2.7) * (hw * 2 - 8) + Math.sin(tm * 1.5 + k) * 3, yy = ((fxRnd(k * 4.1) * (ST.H + 60) + tm * (40 + (k % 5) * 24)) % (ST.H + 60)) - 30; ctx.beginPath(); ctx.arc(xx, yy, .9 + fxRnd(k) * 1.2, 0, 6.283); ctx.fill(); }
   ctx.restore();
   ctx.fillStyle = 'rgba(225,248,255,.85)'; ctx.beginPath();     // frost crystals creep inward along both edges, top first
-  for (const sd of [-1, 1]) for (let y = -ST.H * .35 + 10; y < ST.H * 1.35; y += 24) {
+  for (const sd of SIDES) for (let y = -ST.H * .35 + 10; y < ST.H * 1.35; y += 24) {
     const fr = (y + ST.H * .35) / (ST.H * 1.7), gl = clamp01(pr * 2.2 - fr * 1.1 + (locked ? .5 : 0)); if (gl < .02) continue;
     const len = (5 + 8 * fxRnd(y * .13 + sd)) * gl, xe = x + sd * hw; ctx.moveTo(xe, y); ctx.lineTo(xe - sd * len, y + 5); ctx.lineTo(xe, y + 10);
   }

@@ -6,6 +6,7 @@ import { glow } from '../render/glow.js';
 import { OV_COL } from '../stages/overflow.js';
 import { nmRnd } from '../stages/neon.js';
 import { Sound } from '../audio.js';
+import { SIDES } from '../core.js';
 
 // ---- v54 Seam Colossus (Overflow Reach): a huge slab with a crack down its middle. It lays seam walls, throws shears, fires slab volleys and shockwave rings; the crack widens each phase
 function colSeam() {
@@ -35,7 +36,7 @@ export function drawColossus(b, t, pulse, f) {      // v54 Seam Colossus: a huge
   if (!rm) for (let k = 3; k >= 1; k--) { ctx.globalAlpha = .07 * (4 - k); ctx.fillStyle = OV_COL[(k + ph) % 5]; ctx.fillRect(-hw + Math.sin(t * 1.3 + k) * 5, -hh - k * 15, hw * 2, hh * 2); }   // stretch smear
   ctx.globalAlpha = 1;
   const nc = Math.ceil(hw * 2 / 12);
-  for (const side of [-1, 1]) {
+  for (const side of SIDES) {
     const x0 = side < 0 ? -hw : gap / 2, x1 = side < 0 ? -gap / 2 : hw;
     ctx.save(); ctx.beginPath(); ctx.rect(x0, -hh, x1 - x0, hh * 2); ctx.clip();
     for (let c = 0; c < nc; c++) {
@@ -54,7 +55,7 @@ export function drawColossus(b, t, pulse, f) {      // v54 Seam Colossus: a huge
   glow(0, 0, hh * 1.2, open ? 'rgba(255,240,200,1)' : 'rgba(190,110,255,1)', .5 * cl);
   ctx.globalCompositeOperation = 'source-over';
   const mdx = ST.moth.x - b.x, mdy = ST.moth.y - b.y, md = Math.hypot(mdx, mdy) || 1, pxo = mdx / md * 4, pyo = mdy / md * 2.5;
-  for (const sd of [-1, 1]) {                                                                          // two slit eyes that follow the moth
+  for (const sd of SIDES) {                                                                          // two slit eyes that follow the moth
     const ex = sd * (gap / 2 + (hw - gap / 2) * .5), ey = -hh * .25;
     glow(ex, ey, 30, 'rgba(255,226,120,1)', .5);
     ctx.fillStyle = f ? '#FFFFFF' : '#FFE9A0'; ctx.beginPath(); ctx.ellipse(ex, ey, 17, 6, 0, 0, 6.283); ctx.fill();

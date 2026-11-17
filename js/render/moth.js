@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { ctx, reduceMotion } from '../config.js';
-import { heat, warpAmt } from '../core.js';
+import { heat, warpAmt, SIDES } from '../core.js';
 import { stretchAbout } from './cosmic.js';
 import { glow } from './glow.js';
 
@@ -75,7 +75,7 @@ export function drawMothShadow(t) {                                           //
   const k = ST.uw[5]; if (k < .05 || ST.state === 'menu' || ST.state === 'pv') return;
   const flap = reduceMotion ? .8 : .45 + Math.abs(Math.sin(t * (16 + ST.dispD * 10))) * .55;
   ctx.save(); ctx.globalAlpha = .28 * k; ctx.translate(ST.moth.x + 16, ST.moth.y + 30); ctx.rotate(Math.max(-.35, Math.min(.35, ST.moth.tilt))); ctx.scale(1, .62); ctx.fillStyle = '#000';
-  for (const side of [-1, 1]) { ctx.save(); ctx.scale(side * flap, 1); ctx.beginPath(); ctx.ellipse(20, -6, 26, 14, -.5, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.ellipse(15, 10, 16, 9, .5, 0, 6.283); ctx.fill(); ctx.restore(); }
+  for (const side of SIDES) { ctx.save(); ctx.scale(side * flap, 1); ctx.beginPath(); ctx.ellipse(20, -6, 26, 14, -.5, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.ellipse(15, 10, 16, 9, .5, 0, 6.283); ctx.fill(); ctx.restore(); }
   ctx.beginPath(); ctx.ellipse(0, 2, 5, 14, 0, 0, 6.283); ctx.fill(); ctx.restore();
 }
 export function drawMoth(t, pulse, ghostA) {
@@ -86,7 +86,7 @@ export function drawMoth(t, pulse, ghostA) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(Math.max(-.35, Math.min(.35, tilt)));
   if (ghostA === undefined) glow(0, 0, 70 + ST.dispD * 60 + pulse * 22, ST.dispD > .1 ? heat(ST.dispD) : ST.skin.g, .35 + ST.dispD * .25);
   const flap = reduceMotion ? .8 : .45 + Math.abs(Math.sin(t * (16 + ST.dispD * 10))) * .55;
-  for (const side of [-1, 1]) {
+  for (const side of SIDES) {
     ctx.save(); ctx.scale(side * flap, 1);
     ctx.fillStyle = ST.skin.a;
     ctx.beginPath(); ctx.ellipse(20, -6, 26, 14, -.5, 0, 6.283); ctx.fill();

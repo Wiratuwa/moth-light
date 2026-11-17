@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { ctx, cv, reduceMotion } from '../config.js';
-import { lerp } from '../core.js';
+import { lerp, SIDES } from '../core.js';
 import { BGK, EC, bgM, ecApply, exL, exR, stripW } from '../edge.js';
 import { marqRect } from '../hazards/neon.js';
 import { glow } from '../render/glow.js';
@@ -390,7 +390,7 @@ function drawCassette(r, gl) {
   ctx.fillStyle = '#fff6fb'; ctx.fillRect(x + w * .1, y + h * .12, w * .8, h * .36);
   ctx.fillStyle = '#ff3fa4'; ctx.fillRect(x + w * .14, y + h * .2, w * .4, h * .05);
   ctx.fillStyle = '#2a1a5a'; nmRR(x + w * .28, y + h * .56, w * .44, h * .3, h * .15); ctx.fill();
-  ctx.fillStyle = '#fff'; for (const sx of [-1, 1]) { ctx.beginPath(); ctx.arc(sx * w * .13, y + h * .71, h * .09, 0, 6.283); ctx.fill(); }
+  ctx.fillStyle = '#fff'; for (const sx of SIDES) { ctx.beginPath(); ctx.arc(sx * w * .13, y + h * .71, h * .09, 0, 6.283); ctx.fill(); }
   ctx.strokeStyle = gl ? '#ff71ce' : '#7df9ff'; ctx.lineWidth = 1.5; nmRR(x, y, w, h, r * .12); ctx.stroke();
 }
 function drawCursor(r, gl) {

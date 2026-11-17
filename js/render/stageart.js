@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { PAL, ctx, reduceMotion } from '../config.js';
-import { kEio, kSm, rgb } from '../core.js';
+import { kEio, kSm, rgb, SIDES } from '../core.js';
 import { makePlanet } from './cosmic.js';
 import { auroraPlanet, crimsonPlanet, drawPlanetBody } from './planets.js';
 import { stage, stageIdx } from '../spawn.js';
@@ -24,7 +24,7 @@ function artPath(pts, X, Y) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lin
 export function artMoth(cx, cy, s, t) {
   ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s);
   const fl = .55 + Math.abs(Math.sin(t * 5)) * .45;
-  for (const sd of [-1, 1]) { ctx.save(); ctx.scale(sd * fl, 1); ctx.fillStyle = ST.skin.a; ctx.beginPath(); ctx.ellipse(16, -5, 18, 9, -.5, 0, 6.283); ctx.fill(); ctx.fillStyle = ST.skin.b; ctx.beginPath(); ctx.ellipse(12, 7, 11, 6, .5, 0, 6.283); ctx.fill(); ctx.restore(); }
+  for (const sd of SIDES) { ctx.save(); ctx.scale(sd * fl, 1); ctx.fillStyle = ST.skin.a; ctx.beginPath(); ctx.ellipse(16, -5, 18, 9, -.5, 0, 6.283); ctx.fill(); ctx.fillStyle = ST.skin.b; ctx.beginPath(); ctx.ellipse(12, 7, 11, 6, .5, 0, 6.283); ctx.fill(); ctx.restore(); }
   ctx.fillStyle = ST.skin.body; ctx.beginPath(); ctx.ellipse(0, 1, 3.6, 10, 0, 0, 6.283); ctx.fill(); ctx.restore();
 }
 function artWorld(card, key, mk, x, y, t, boost) {                // a real planet body from the game's own renderer, built once per card world and reused every frame

@@ -6,6 +6,7 @@ import { Sound } from './audio.js';
 let bgGrad;
 let orbs;
 
+export const SIDES = [-1, 1];            // reused by `for (const side of SIDES)`: a literal there is a new array every frame
 export const lerp = (a, b, t) => a + (b - a) * t;
 export function heat(d, a = 1) {
   // teal -> gold -> red

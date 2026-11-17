@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { AUR, WARP_COL, ctx, cur, reduceMotion } from '../config.js';
-import { heat, rgb, warpAmt } from '../core.js';
+import { heat, rgb, warpAmt, SIDES } from '../core.js';
 import { drawThunders } from './thunder.js';
 import { drawCosmic, drawPlanet } from './cosmic.js';
 import { calcStormFlash } from './planets.js';
@@ -11,19 +11,28 @@ import { bgCullSet, bgOn, drawNeon, drawNeonFx, nmRnd } from '../stages/neon.js'
 import { drawOverflow, drawStageDetail, ovGroundStep } from '../stages/overflow.js';
 
 // ====== ambience for Moonlit Garden and Nebula Reef (drawn in the world-wide background, so it spans the strips) ======
+// gradients that only change with the screen height or the stage weight are built once and reused (same pixels, fewer allocations per frame)
+let mgBeam = null, mgBeamH = -1, mgBeamA = -1;
+const mgMist = [null, null], mgMistW = [-1, -1], mgMistA = [-1, -1];
+const mgPetal = [], mgPetalS = [], mgPetalA = [];
 export function drawMoonGarden(t, a, n) {
   const WW = ST.W;
   ctx.globalCompositeOperation = 'lighter';
   for (let i = 0; i < 3; i++) {                                          // moonbeams
     const x0 = WW * (.18 + .3 * i) + Math.sin(t * .09 + i * 2) * WW * .035, wt = 34 + i * 12, dr = -150 - i * 40;
-    const g = ctx.createLinearGradient(0, 0, 0, ST.H * .95); g.addColorStop(0, 'rgba(190,205,255,' + (.085 * a) + ')'); g.addColorStop(1, 'rgba(190,205,255,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x0, -10); ctx.lineTo(x0 + wt, -10); ctx.lineTo(x0 + wt * 2.6 + dr, ST.H * .95); ctx.lineTo(x0 + dr, ST.H * .95); ctx.closePath(); ctx.fill();
+    if (mgBeamH !== ST.H || mgBeamA !== a) {
+      mgBeam = ctx.createLinearGradient(0, 0, 0, ST.H * .95); mgBeam.addColorStop(0, 'rgba(190,205,255,' + (.085 * a) + ')'); mgBeam.addColorStop(1, 'rgba(190,205,255,0)'); mgBeamH = ST.H; mgBeamA = a;
+    }
+    ctx.fillStyle = mgBeam; ctx.beginPath(); ctx.moveTo(x0, -10); ctx.lineTo(x0 + wt, -10); ctx.lineTo(x0 + wt * 2.6 + dr, ST.H * .95); ctx.lineTo(x0 + dr, ST.H * .95); ctx.closePath(); ctx.fill();
   }
   for (let i = 0; i < 4; i++) {                                          // mist banks
     const x = ((t * (5 + i * 2.5) + i * WW * .33) % (WW * 1.5)) - WW * .25, y = ST.H * (.66 + .07 * (i % 3)), rw = WW * (.3 + .06 * (i % 2));
     ctx.save(); ctx.translate(x, y); ctx.scale(1, .22);
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rw); g.addColorStop(0, 'rgba(165,175,235,' + (.1 * a) + ')'); g.addColorStop(1, 'rgba(165,175,235,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, rw, 0, 6.283); ctx.fill(); ctx.restore();
+    const mi = i % 2;
+    if (mgMistW[mi] !== rw || mgMistA[mi] !== a) {
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rw); g.addColorStop(0, 'rgba(165,175,235,' + (.1 * a) + ')'); g.addColorStop(1, 'rgba(165,175,235,0)'); mgMist[mi] = g; mgMistW[mi] = rw; mgMistA[mi] = a;
+    }
+    ctx.fillStyle = mgMist[mi]; ctx.beginPath(); ctx.arc(0, 0, rw, 0, 6.283); ctx.fill(); ctx.restore();
   }
   ctx.globalCompositeOperation = 'source-over';
   for (let i = 0, NP = n(14); i < NP; i++) {                             // drifting blossom petals
@@ -31,8 +40,10 @@ export function drawMoonGarden(t, a, n) {
     const x = r2 * WW + Math.sin(t * .7 + i) * 18, y = ((t * (16 + r1 * 20) + r3 * (ST.H + 60)) % (ST.H + 60)) - 30, sz = 3.4 + r1 * 3;
     if (!bgOn(x, sz * 1.5 + 2)) continue;
     ctx.save(); ctx.translate(x, y); ctx.rotate(t * (.6 + r2) + i); ctx.scale(1, .55 + .45 * Math.sin(t * 1.3 + i * 1.9));
-    const g = ctx.createLinearGradient(-sz, 0, sz, 0); g.addColorStop(0, 'rgba(255,225,240,' + (.55 * a) + ')'); g.addColorStop(1, 'rgba(255,170,205,' + (.5 * a) + ')');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -sz); ctx.bezierCurveTo(sz * 1.1, -sz * .5, sz * .9, sz * .8, 0, sz); ctx.bezierCurveTo(-sz * .9, sz * .8, -sz * 1.1, -sz * .5, 0, -sz); ctx.fill(); ctx.restore();
+    if (mgPetalS[i] !== sz || mgPetalA[i] !== a) {
+      const g = ctx.createLinearGradient(-sz, 0, sz, 0); g.addColorStop(0, 'rgba(255,225,240,' + (.55 * a) + ')'); g.addColorStop(1, 'rgba(255,170,205,' + (.5 * a) + ')'); mgPetal[i] = g; mgPetalS[i] = sz; mgPetalA[i] = a;
+    }
+    ctx.fillStyle = mgPetal[i]; ctx.beginPath(); ctx.moveTo(0, -sz); ctx.bezierCurveTo(sz * 1.1, -sz * .5, sz * .9, sz * .8, 0, sz); ctx.bezierCurveTo(-sz * .9, sz * .8, -sz * 1.1, -sz * .5, 0, -sz); ctx.fill(); ctx.restore();
   }
   for (let i = 0, NF = n(9); i < NF; i++) {                              // fireflies
     const r1 = nmRnd(i * 2.3 + 40), r2 = nmRnd(i * 4.1 + 41);
@@ -48,7 +59,7 @@ function drawCosmicJelly(x, y, R, ph, t, a) {                          // an int
   ctx.save(); ctx.translate(x, y); ctx.globalAlpha = a;
   glow(0, -R * .1, R * 2.1, 'rgba(150,110,255,1)', .3);
   ctx.lineCap = 'round';
-  for (const sd of [-1, 1]) {                                          // long oral arms
+  for (const sd of SIDES) {                                          // long oral arms
     const g = ctx.createLinearGradient(0, R * .1, 0, R * 3); g.addColorStop(0, 'rgba(190,150,255,.42)'); g.addColorStop(1, 'rgba(190,150,255,0)');
     ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(sd * R * .18, R * .1);
     for (let q = 1; q <= 8; q++) ctx.lineTo(sd * R * .18 + Math.sin(t * 1.1 + q * .6 + sd) * (4 + q * 1.8), R * .1 + q * R * .36);

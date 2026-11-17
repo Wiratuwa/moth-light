@@ -2,6 +2,7 @@ import { ST } from '../state.js';
 import { ctx, reduceMotion } from '../config.js';
 import { nmc } from '../spawn.js';
 import { OV_COL } from '../stages/overflow.js';
+import { SIDES } from '../core.js';
 
 
 // ---------- stage-flavoured text popups (event notices and banners) ----------
@@ -75,7 +76,7 @@ export function drawPopText(text, x, y, color, size, kind, t) {
     const o = (t * .45) % 1.5 - .25, g = ctx.createLinearGradient(-wv / 2, 0, wv / 2, 0);
     g.addColorStop(0, col); g.addColorStop(c01(o - .2), col); g.addColorStop(c01(o), '#FFFFFF'); g.addColorStop(c01(o + .2), col); g.addColorStop(1, col);
     const gap = fs * .55, len = Math.max(0, Math.min(34, (avail - wv) / 2 - gap - 2));
-    if (len > 6) for (const sd of [-1, 1]) {                                 // frost hairlines, fading outwards
+    if (len > 6) for (const sd of SIDES) {                                 // frost hairlines, fading outwards
       const x0 = sd * (wv / 2 + gap), lg = ctx.createLinearGradient(x0, 0, x0 + sd * len, 0); lg.addColorStop(0, 'rgba(190,240,255,.8)'); lg.addColorStop(1, 'rgba(190,240,255,0)');
       ctx.fillStyle = lg; ctx.fillRect(Math.min(x0, x0 + sd * len), mid, len, 1);
     }

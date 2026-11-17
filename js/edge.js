@@ -1,6 +1,6 @@
 import { ST } from './state.js';
 import { HAZ, STAGES, ctx, reduceMotion } from './config.js';
-import { lerp } from './core.js';
+import { lerp, SIDES } from './core.js';
 import { buzz } from './input.js';
 import { addHeat, addScore, burst, floatText, fmtNum, ring, scoreMult, showBanner, spawnShard, spawnSpore, spawnStrike, stage, tierOf } from './spawn.js';
 import { clampN } from './bosses/sentinel.js';
@@ -86,7 +86,7 @@ export function ecBleed(dt) {                                                 //
 export function drawEdgeBleed(t) {
   if (ST.state !== 'play') return;
   const pu = .8 + .2 * Math.sin(t * 2.2), S = stripW();
-  for (const side of [-1, 1]) {
+  for (const side of SIDES) {
     const g = side < 0 ? EC.gl : EC.gr, h = side < 0 ? EC.hl : EC.hr, tot = g + h;
     if (tot < .02) continue;
     const seen = (side < 0 ? Math.max(0, -EC.x) : Math.max(0, EC.x)) / S;            // once the strip is revealed the glow is not needed
@@ -100,7 +100,7 @@ export function drawEdgeBleed(t) {
 }
 export function drawStripDeco(t) {                                            // per-stage flavour inside the hidden strips
   const S = stripW(), N = ST.lowFx ? 6 : 12;
-  for (const side of [-1, 1]) {
+  for (const side of SIDES) {
     if (side < 0 ? EC.x > -3 : EC.x < 3) continue;
     const x0 = side < 0 ? -S : ST.W, vis = Math.min(1, Math.abs(EC.x) / (S * .5));
     const sg = ctx.createLinearGradient(side < 0 ? 0 : ST.W, 0, side < 0 ? -S : ST.W + S, 0);

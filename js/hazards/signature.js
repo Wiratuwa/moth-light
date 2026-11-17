@@ -5,6 +5,7 @@ import { notice, showBanner } from '../spawn.js';
 import { clampN } from '../bosses/sentinel.js';
 import { glow } from '../render/glow.js';
 import { Sound } from '../audio.js';
+import { SIDES } from '../core.js';
 
 // ---------- stage signature hazards: Moonlit owl dive, Nebula current, Aurora black ice, Crimson thundercloud
 export function spawnOwl() {
@@ -30,7 +31,7 @@ export function drawOwl(it, t) {
   ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(Math.atan2(it.ty - it.sy, it.tx - it.sx) - Math.PI / 2);
   glow(0, 0, 54, 'rgba(255,232,138,1)', warn ? .18 : .3);
   const flap = warn ? Math.sin(t * 10) * .25 : .1;
-  for (const sd of [-1, 1]) {                                          // wings: three layered feathers per side
+  for (const sd of SIDES) {                                          // wings: three layered feathers per side
     ctx.save(); ctx.translate(sd * 12, -7); ctx.rotate(sd * (-.5 + flap));
     const wg = ctx.createLinearGradient(0, 0, sd * 40, 0); wg.addColorStop(0, '#4F3FA4'); wg.addColorStop(1, '#8E7BE0');
     ctx.fillStyle = wg;
@@ -49,7 +50,7 @@ export function drawOwl(it, t) {
   ctx.fillStyle = 'rgba(235,225,255,.2)'; ctx.beginPath(); ctx.ellipse(0, 15, 8.5, 7.5, 0, 0, 6.283); ctx.fill();   // facial disc
   ctx.fillStyle = '#3E2F86'; ctx.beginPath(); ctx.moveTo(-9, 22); ctx.lineTo(-6, 29); ctx.lineTo(-3, 22); ctx.moveTo(9, 22); ctx.lineTo(6, 29); ctx.lineTo(3, 22); ctx.fill();   // ear tufts (pointing along travel)
   const bl = warn && Math.sin(t * 7) > .85 ? .2 : 1;
-  for (const sd of [-1, 1]) {
+  for (const sd of SIDES) {
     glow(sd * 4.5, 15, 9, 'rgba(255,232,138,1)', .55);
     ctx.fillStyle = '#FFE88A'; ctx.beginPath(); ctx.ellipse(sd * 4.5, 15, 3.4, 3.4 * bl, 0, 0, 6.283); ctx.fill();
     ctx.fillStyle = '#2A1B5E'; ctx.beginPath(); ctx.ellipse(sd * 4.5, 15.6, 1.4, 1.6 * bl, 0, 0, 6.283); ctx.fill();

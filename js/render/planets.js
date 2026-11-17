@@ -1,6 +1,6 @@
 import { ST } from '../state.js';
 import { ctx, reduceMotion } from '../config.js';
-import { rgb } from '../core.js';
+import { rgb, SIDES } from '../core.js';
 import { drawRingHalf, makePlanet } from './cosmic.js';
 import { fxRnd } from './sprites-b.js';
 
@@ -237,7 +237,7 @@ function buildPlanet(p) {
     o.restore();
   }
   if (type === 'glacier') {                                                            // aurora rings around both poles
-    for (const sy of [-1, 1]) {
+    for (const sy of SIDES) {
       o.save(); o.translate(0, sy * r * .78); o.scale(1, .25);
       gr = o.createRadialGradient(0, 0, r * .2, 0, 0, r * .75); gr.addColorStop(0, 'rgba(120,255,210,.0)'); gr.addColorStop(.7, 'rgba(120,255,210,.18)'); gr.addColorStop(1, 'rgba(120,255,210,0)'); o.fillStyle = gr; o.beginPath(); o.arc(0, 0, r * .75, 0, PTAU); o.fill();
       o.lineCap = 'round'; o.strokeStyle = 'rgba(120,255,210,.2)'; o.lineWidth = r * .16; o.beginPath(); o.arc(0, 0, r * .6, 0, Math.PI); o.stroke();
@@ -427,7 +427,7 @@ export function drawPlanetBody(p, t) {
   };
   if (s.seam) {                                                        // splitting world: two halves drift apart along the rift, hot break line between them, chunks escaping
     const gap = r * (.06 + (rm ? 0 : .02 * Math.sin(t * .3 + p.ph)));
-    for (const sg of [-1, 1]) { ctx.save(); ctx.rotate(p.sa); ctx.translate(0, sg * gap); ctx.beginPath(); ctx.rect(-r * 3, sg < 0 ? -r * 3 : 0, r * 6, r * 3); ctx.clip(); ctx.rotate(-p.sa); body(); ctx.restore(); }
+    for (const sg of SIDES) { ctx.save(); ctx.rotate(p.sa); ctx.translate(0, sg * gap); ctx.beginPath(); ctx.rect(-r * 3, sg < 0 ? -r * 3 : 0, r * 6, r * 3); ctx.clip(); ctx.rotate(-p.sa); body(); ctx.restore(); }
     ctx.save(); ctx.rotate(p.sa);
     ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = ga * (rm ? .8 : .7 + .2 * Math.sin(t * 1.7 + p.ph)); ctx.drawImage(s.seam, -s.SW / 2, -s.SH / 2, s.SW, s.SH);
     ctx.globalCompositeOperation = 'source-over'; const ck = chunkSprite();

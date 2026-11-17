@@ -6,6 +6,7 @@ import { drawSentinel } from './sentinel.js';
 import { drawColossus } from './colossus.js';
 import { OV_COL } from '../stages/overflow.js';
 import { nmRnd } from '../stages/neon.js';
+import { SIDES } from '../core.js';
 
 // ====== v56: every boss has its own armor plates, health bar and hit effects ======
 // Kinds: eye (Void Eye, moon-silver crescents), jelly (Spore Mother, spore pods), prism (Prism Sentinel, ice crystals),
@@ -178,7 +179,7 @@ function drawPlate(b, k, t, fl) {
     ctx.lineCap = 'round'; path(); ctx.strokeStyle = fl ? '#FFFFFF' : '#241B3A'; ctx.lineWidth = 9; ctx.stroke();
     path(); ctx.strokeStyle = fl ? '#FFE0E8' : '#4A3F72'; ctx.lineWidth = 5.5; ctx.stroke();
     ctx.save(); ctx.translate(2.6, 0); path(); ctx.strokeStyle = 'rgba(190,180,255,.8)'; ctx.lineWidth = 1.3; ctx.stroke(); ctx.restore();
-    for (const s of [-1, 1]) { glow(0, s * L * .6, 6, 'rgba(255,90,120,1)', .6); ctx.fillStyle = '#FF6B8A'; ctx.beginPath(); ctx.arc(0, s * L * .6, 1.8, 0, 6.283); ctx.fill(); }
+    for (const s of SIDES) { glow(0, s * L * .6, 6, 'rgba(255,90,120,1)', .6); ctx.fillStyle = '#FF6B8A'; ctx.beginPath(); ctx.arc(0, s * L * .6, 1.8, 0, 6.283); ctx.fill(); }
     ctx.lineCap = 'butt';
   } else if (K === 'sentinel') {                      // holographic hex panel, flickers and tears when hit
     const hr = r * .3, col = ['#7DF9FF', '#FFD166', '#FF4D6D'][ph];
