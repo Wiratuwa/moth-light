@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#14132B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Moth Light</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<button id="menuBtn" aria-label="Menu"><i></i><i></i><i></i></button>
+<div id="menuPanel">
+  <button id="snd">Sound on</button>
+  <button id="pauseBtn">Pause</button>
+  <div class="lbl">GRAPHICS</div>
+  <div id="gfxRow"><button data-q="2">Low</button><button data-q="1">Medium</button><button data-q="0">High</button></div>
+</div>
+<button id="testBtn">Test</button>
+<div id="testPanel"></div>
+
+<button id="skipBtn" class="chip">Skip</button>
+
+<div class="overlay" id="menu">
+  <h1 class="sr">Moth Light</h1>
+  <p class="tag">Drag to steer. Catch the glow.</p>
+  <button class="main" id="startBtn">Play</button>
+  <div class="row"><button class="alt" id="pvBtn">Watch trailer</button><button class="alt" id="closetBtn">Moth wardrobe</button></div>
+  <p id="bestMenu"></p>
+</div>
+
+<div class="overlay hide" id="closet" style="background:#14132B;z-index:30">
+  <h2>Moth wardrobe</h2>
+  <div class="lb2">SKINS</div><div class="grid" id="skinGrid"></div>
+  <div class="lb2">TRAILS</div><div class="grid" id="trailGrid"></div>
+  <button class="main" id="closetDone" style="animation:none">Done</button>
+</div>
+
+<div class="overlay hide" id="paused">
+  <h1>Paused</h1>
+  <p>Your run is frozen. Resume when you're ready.</p>
+  <button class="main" id="resumeBtn">Resume</button>
+  <button class="alt" id="restartBtn">Restart</button>
+</div>
+
+<div class="overlay hide" id="over">
+  <p>You scored</p>
+  <div class="score-big" id="finalScore">0</div>
+  <p id="bestOver"></p>
+  <button class="main" id="againBtn">Play again</button>
+  <button class="alt" id="closetBtn2">Moth wardrobe</button>
+</div>
+
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>

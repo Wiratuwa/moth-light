@@ -84,3 +84,9 @@ Ada sekitar 140 variabel `let` top-level. Modul ES tidak boleh meng-assign varia
 
 ## Status git (Fase 0)
 Folder ini **belum repo git**. Fase 0 (init, remote, commit awal, tag `v56-original`, push) belum dikerjakan.
+
+## Hasil Fase 2
+- Dipecah dengan codemod berbasis AST sekali jalan (acorn + eslint-scope; skrip tidak disimpan). Nama objek state adalah `ST`, bukan `S`, karena `S` sudah dipakai di kode lama. 122 variabel bersama ada di `js/state.js`; 34 variabel privat tetap `let` lokal di modulnya.
+- Semua pernyataan yang jalan saat load (listener, `reset()`, `requestAnimationFrame(frame)`, isi awal state yang bergantung modul lain) dipindah ke `js/main.js` dengan urutan aslinya.
+- Font tetap base64 di `style.css` (keputusan pemilik; pindah ke woff2 sesudah tes lolos).
+- Uji: `npm run build`, lalu `npm test` (baseline `moth-light-56.html` vs `dist/`, seed + jam palsu, 215 hash canvas). `node tests/run.mjs --only src` menguji ES module asli tanpa bundler, `--only audio` smoke dengan WebAudio asli.

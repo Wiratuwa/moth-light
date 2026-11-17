@@ -1,0 +1,15 @@
+{
+  "name": "moth-light",
+  "version": "56.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node tests/run.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.65.1",
+    "vite": "^8.3.8"
+  }
+}
